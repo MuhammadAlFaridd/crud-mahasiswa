@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+                                                        // tambahkan script
+
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    padding: 40px;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  .container {
+    max-width: 400px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  input {
+    flex: 1;
+    padding: 8px;
+  }
+
+  button {
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 6px;
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .btn-edit {
+    background: #ffc107;
+    border: none;
+  }
+
+  .btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+  }
+</style>
+
+  <title>CRUD Node.js</title>
+</head>
+<body>
+
+<div class="container">
+  <h2>CRUD Sederhana</h2>
+
+                                                            // tambahkan button
+
+  <div class="form">
+    <input type="text" id="nama" placeholder="Masukkan nama">
+    <button onclick="tambahData()">Tambah</button>
+  </div>
+
+  <ul id="list"></ul>
+</div>
+
+<script>
+const API = 'http://localhost:3000/api/nama';
+
+// READ
+async function tampilData() {
+  const res = await fetch(API);
+  const data = await res.json();
+
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+
+  data.forEach(item => {
+    list.innerHTML += `
+      <li>
+        <span>${item.nama}</span>
+    <div>
+      <button class="btn-edit" onclick="editData(${item.id})">Edit</button>
+      <button class="btn-delete" onclick="hapusData(${item.id})">Delete</button>
+    </div>
+  </li>
+`;
+
+  });
+}
+
+// CREATE
+async function tambahData() {
+  const nama = document.getElementById('nama').value;
+
+  await fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nama })
+  });
+
+  document.getElementById('nama').value = '';
+  tampilData();
+}
+
+// UPDATE
+async function editData(id) {
+  const namaBaru = prompt('Masukkan nama baru');
+
+  await fetch(`${API}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nama: namaBaru })
+  });
+
+  tampilData();
+}
+
+// DELETE
+async function hapusData(id) {
+  await fetch(`${API}/${id}`, { method: 'DELETE' });
+  tampilData();
+}
+
+tampilData();
+
+                                                                      // tambahkan kode
+                                                                      
+</script>
+
+</body>
+</html>
